@@ -14,6 +14,11 @@ public class ModuloConexao {
     //mysql://:@/heroku_e5e1a8358c41d62?reconnect=true
     public static Connection conector() {
         Connection conexao = null;
+        //String driver = "com.mysql.cj.jdbc.Driver";
+        //String url = "jdbc:mysql://localhost:3306/dbinfox";
+        //String user = "root";
+        //String password = "123456";
+        ///////////////////////////////////////////////////////////////////////////////////////
         String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://us-cdbr-east-04.cleardb.com:3306/heroku_e5e1a8358c41d62";
         String user = "bc1278e268cba7";
