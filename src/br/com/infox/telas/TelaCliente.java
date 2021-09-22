@@ -66,6 +66,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     txtCliEstado.setText(null);
                     txtCliId.setText(null);
                     txtCliCep.setText(null);
+                    txtCliComplemento.setText(null);
                 }
             }
         } catch (Exception e) {
@@ -112,11 +113,49 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     txtCliEstado.setText(null);
                     txtCliId.setText(null);
                     txtCliCep.setText(null);
+                    btnAdicionar.setEnabled(true);
                 }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+    
+        private void remover() {
+      int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover esse cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
+      if (confirma == JOptionPane.YES_OPTION) {
+          String sql ="delete from tbclientes where idcli=?";
+          try {
+              pst=conexao.prepareStatement(sql);
+              pst.setString(1, txtCliId.getText());
+              int apagado = pst.executeUpdate();
+              
+              if (txtCliId.getText().isEmpty()) {
+                  JOptionPane.showMessageDialog(null, "Preencha o ID do usuário que você deseja apagar.");
+              }
+              
+              if (apagado > 0) {
+                  JOptionPane.showMessageDialog(null, "Cliente removido com sucesso!");
+                    txtCliNome.setText(null);
+                    txtCliCpf.setText(null);
+                    txtCliCelular.setText(null);
+                    txtCliTelefone.setText(null);
+                    txtCliEmail.setText(null);
+                    txtCliNumAp.setText(null);
+                    txtCliRua.setText(null);
+                    txtCliBairro.setText(null);
+                    txtCliCidade.setText(null);
+                    txtCliEstado.setText(null);
+                    txtCliId.setText(null);
+                    txtCliCep.setText(null);
+                    btnAdicionar.setEnabled(true);
+              }
+              
+              
+          } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e);
+          }
+          }
     }
 
     //Metodo para pesquisa clientes com filtro
@@ -151,6 +190,9 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         txtCliEstado.setText(tblClientes.getModel().getValueAt(setar, 10).toString());
         txtCliComplemento.setText(tblClientes.getModel().getValueAt(setar, 11).toString());
         txtCliCep.setText(tblClientes.getModel().getValueAt(setar, 12).toString());
+        
+        //desabilita o botao de adicionar
+        btnAdicionar.setEnabled(false);
     }
 
     /**
@@ -316,6 +358,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         getContentPane().add(btnAlterar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 450, 140, 140));
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/delete.png"))); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 450, 140, 140));
 
         jLabel2.setText("ID Cliente");
@@ -352,6 +399,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     private void txtCliIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCliIdActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCliIdActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        remover();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -84,7 +84,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             pst.setString(3, txtUsuSenha.getText());
             pst.setString(4, cboUsuPerfil.getSelectedItem().toString());
             pst.setString(5, txtUsuId.getText());
-            
+
             if (txtUsuId.getText().isEmpty() || txtUsuNome.getText().isEmpty() || txtUsuLogin.getText().isEmpty() || txtUsuSenha.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os dados obrigatórios");
             } else {
@@ -103,33 +103,32 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     private void remover() {
-      int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover esse usuário", "Atenção!", JOptionPane.YES_NO_OPTION);
-      if (confirma == JOptionPane.YES_OPTION) {
-          String sql ="delete from tbusuarios where iduser=?";
-          try {
-              pst=conexao.prepareStatement(sql);
-              pst.setString(1, txtUsuId.getText());
-              int apagado = pst.executeUpdate();
-              
-              if (txtUsuId.getText().isEmpty()) {
-                  JOptionPane.showMessageDialog(null, "Preencha o ID do usuário que você deseja apagar.");
-              }
-              
-              if (apagado > 0) {
-                  JOptionPane.showMessageDialog(null, "Usuário removido com sucesso!");
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover esse usuário", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbusuarios where iduser=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtUsuId.getText());
+                int apagado = pst.executeUpdate();
+
+                if (txtUsuId.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Preencha o ID do usuário que você deseja apagar.");
+                }
+
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Usuário removido com sucesso!");
                     txtUsuId.setText(null);
                     txtUsuNome.setText(null);
                     txtUsuLogin.setText(null);
                     txtUsuSenha.setText(null);
-              }
-              
-              
-          } catch (Exception e) {
-              JOptionPane.showMessageDialog(null, e);
-          }
-          }
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
     }
 
     /**
