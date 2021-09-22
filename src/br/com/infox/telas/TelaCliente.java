@@ -8,6 +8,7 @@ package br.com.infox.telas;
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -54,18 +55,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso");
-                    txtCliNome.setText(null);
-                    txtCliCpf.setText(null);
-                    txtCliCelular.setText(null);
-                    txtCliTelefone.setText(null);
-                    txtCliEmail.setText(null);
-                    txtCliNumAp.setText(null);
-                    txtCliRua.setText(null);
-                    txtCliBairro.setText(null);
-                    txtCliCidade.setText(null);
-                    txtCliEstado.setText(null);
-                    txtCliId.setText(null);
-                    txtCliCep.setText(null);
+                    limparCampos();
                     txtCliComplemento.setText(null);
                 }
             }
@@ -101,18 +91,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados do cliente alterados com sucesso");
-                    txtCliNome.setText(null);
-                    txtCliCpf.setText(null);
-                    txtCliCelular.setText(null);
-                    txtCliTelefone.setText(null);
-                    txtCliEmail.setText(null);
-                    txtCliNumAp.setText(null);
-                    txtCliRua.setText(null);
-                    txtCliBairro.setText(null);
-                    txtCliCidade.setText(null);
-                    txtCliEstado.setText(null);
-                    txtCliId.setText(null);
-                    txtCliCep.setText(null);
+                    limparCampos();
                     btnAdicionar.setEnabled(true);
                 }
             }
@@ -120,47 +99,39 @@ public class TelaCliente extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-        private void remover() {
-      int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover esse cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
-      if (confirma == JOptionPane.YES_OPTION) {
-          String sql ="delete from tbclientes where idcli=?";
-          try {
-              pst=conexao.prepareStatement(sql);
-              pst.setString(1, txtCliId.getText());
-              int apagado = pst.executeUpdate();
-              
-              if (txtCliId.getText().isEmpty()) {
-                  JOptionPane.showMessageDialog(null, "Preencha o ID do usuário que você deseja apagar.");
-              }
-              
-              if (apagado > 0) {
-                  JOptionPane.showMessageDialog(null, "Cliente removido com sucesso!");
-                    txtCliNome.setText(null);
-                    txtCliCpf.setText(null);
-                    txtCliCelular.setText(null);
-                    txtCliTelefone.setText(null);
-                    txtCliEmail.setText(null);
-                    txtCliNumAp.setText(null);
-                    txtCliRua.setText(null);
-                    txtCliBairro.setText(null);
-                    txtCliCidade.setText(null);
-                    txtCliEstado.setText(null);
-                    txtCliId.setText(null);
-                    txtCliCep.setText(null);
+
+    private void remover() {
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover esse cliente?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbclientes where idcli=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtCliId.getText());
+                int apagado = pst.executeUpdate();
+
+                if (txtCliId.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Preencha o ID do usuário que você deseja apagar.");
+                }
+
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Cliente removido com sucesso!");
+                    limparCampos();
                     btnAdicionar.setEnabled(true);
-              }
-              
-              
-          } catch (Exception e) {
-              JOptionPane.showMessageDialog(null, e);
-          }
-          }
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
     }
 
     //Metodo para pesquisa clientes com filtro
     private void pesquisarCliente() {
-        String sql = "select * from tbclientes where nomecli like ?";
+        String sql = "select idcli as ID, nomecli as Nome, cpf as CPF, "
+                + "cellcli as Celular, fonecli as Telefone,  emailcli as Email, "
+                + "numrescli as Número, ruacli as Rua, bairrocli as Bairro, "
+                + "cidadecli as Cidade, estadocli as Estado, complementocli as Complemento, "
+                + "cepcli as CEP from tbclientes where nomecli like ?";
 
         try {
             pst = conexao.prepareStatement(sql);
@@ -190,9 +161,27 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         txtCliEstado.setText(tblClientes.getModel().getValueAt(setar, 10).toString());
         txtCliComplemento.setText(tblClientes.getModel().getValueAt(setar, 11).toString());
         txtCliCep.setText(tblClientes.getModel().getValueAt(setar, 12).toString());
-        
+
         //desabilita o botao de adicionar
         btnAdicionar.setEnabled(false);
+    }
+
+    public void limparCampos() {
+        txtCliId.setText(null);
+        txtCliNome.setText(null);
+        txtCliCpf.setText(null);
+        txtCliCelular.setText(null);
+        txtCliTelefone.setText(null);
+        txtCliEmail.setText(null);
+        txtCliNumAp.setText(null);
+        txtCliRua.setText(null);
+        txtCliBairro.setText(null);
+        txtCliCidade.setText(null);
+        txtCliEstado.setText(null);
+        txtCliId.setText(null);
+        txtCliCep.setText(null);
+        txtCliComplemento.setText(null);
+        ((DefaultTableModel) tblClientes.getModel()).setRowCount(0);
     }
 
     /**
@@ -263,17 +252,24 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/read-cli.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 5, 20, -1));
 
+        tblClientes = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false;
+            }
+        };
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Nome", "CPF", "Celular", "Telefone", "E-mail", "Número/Ap", "Rua", "Bairro", "Cidade", "Estado", "Complemento", "CEP"
             }
         ));
+        tblClientes.setFocusable(false);
+        tblClientes.getTableHeader().setReorderingAllowed(false);
         tblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblClientesMouseClicked(evt);
