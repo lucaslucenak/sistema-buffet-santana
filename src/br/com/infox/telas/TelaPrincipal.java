@@ -235,11 +235,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_menCadCliActionPerformed
 
     private void menCadEveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadEveActionPerformed
-        // TODO add your handling code here:
+        // Chama a tela de eventos
+        TelaEvento  evento = new TelaEvento();
+        evento.setVisible(true);
+        desktop.add(evento);
     }//GEN-LAST:event_menCadEveActionPerformed
 
     private void menCadUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadUsuActionPerformed
-        // TODO add your handling code here:
         TelaUsuario usuario = new TelaUsuario();
         usuario.setVisible(true);
         desktop.add(usuario);
