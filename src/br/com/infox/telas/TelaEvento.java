@@ -19,7 +19,7 @@ public class TelaEvento extends javax.swing.JInternalFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
+
     //Cria uma variavel pra armazenar uma string relatica ao radioButton
     String tipoEveOrc;
 
@@ -29,35 +29,35 @@ public class TelaEvento extends javax.swing.JInternalFrame {
     public TelaEvento() {
         initComponents();
         conexao = ModuloConexao.conector();
-    
+
     }
-    
+
     private void pesquisarCliente() {
         /*String sql = "select idcli as Id, nomecli as Nome, cellcli as Celular, "
                 + "fonecli as Telefone, emailcli as Email, numrescli as Numero, "
                 + "bairrocli as Bairro, cidadecli as Cidade, estadocli as Estado, "
                 + "complementocli as Complemento, cepcli as CEP from tbclientes where nomecli like ?";*/
-          String sql = "select idcli as Id, nomecli as Nome, cellcli as Celular from tbclientes where nomecli like ?";
-        
+        String sql = "select idcli as Id, nomecli as Nome, cellcli as Celular from tbclientes where nomecli like ?";
+
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtCliPesquisar.getText() + "%");
             rs = pst.executeQuery();
             tblClientes.setModel(DbUtils.resultSetToTableModel(rs));
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     private void setarCampos() {
         int setar = tblClientes.getSelectedRow();
         txtCliId.setText(tblClientes.getModel().getValueAt(setar, 0).toString());
     }
-    
-private void emitirEvento(){
+
+    private void emitirEvento() {
         String sql = "insert into tbeventos(tipo_eve_orc, situacao, tipo, dia, hora, lugar, valor, descricao, idcli) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
+
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, tipoEveOrc);
@@ -69,14 +69,13 @@ private void emitirEvento(){
             pst.setString(7, txtEventoValor.getText().replace(",", "."));
             pst.setString(8, txtEventoDescricao.getText());
             pst.setString(9, txtCliId.getText());
-            
-            if ((txtCliId.getText().isEmpty()) || (txtEventoDia.getText().isEmpty()) || (txtEventoHora.getText().isEmpty())){
+
+            if ((txtCliId.getText().isEmpty()) || (txtEventoDia.getText().isEmpty()) || (txtEventoHora.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios!");
-            }
-            else {
+            } else {
                 int adicionado = pst.executeUpdate();
                 if (adicionado > 0) {
-                     JOptionPane.showMessageDialog(null, "Evento emitido com sucesso!");
+                    JOptionPane.showMessageDialog(null, "Evento emitido com sucesso!");
                 }
                 txtCliId.setText(null);
                 txtEventoTipo.setText(null);
@@ -88,6 +87,128 @@ private void emitirEvento(){
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void pesquisarEvento() {
+        //cria uma caixa de entrada e atribui a uma variavel
+        String numEvento = JOptionPane.showInputDialog("Número do evento: ");
+        String sql = "select * from tbeventos where evento = " + numEvento;
+        try {
+            pst = conexao.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                txtEvento.setText(rs.getString(1));
+                txtData.setText(rs.getString(2));
+
+                //Setando os radio buttons
+                String rbtTipoEveOrc = rs.getString(3);
+
+                if (rbtTipoEveOrc.equals("Evento")) {
+                    rbtEvento.setSelected(true);
+                    tipoEveOrc = "Evento";
+                } else {
+                    rbtOrc.setSelected(true);
+                    tipoEveOrc = "Orçamento";
+                }
+
+                cboEventoSit.setSelectedItem(rs.getString(4));
+                txtEventoTipo.setText(rs.getString(5));
+                txtEventoDia.setText(rs.getString(6));
+                txtEventoHora.setText(rs.getString(7));
+                txtEventoLocal.setText(rs.getString(8));
+                txtEventoValor.setText(rs.getString(9));
+                txtEventoDescricao.setText(rs.getString(10));
+                txtCliId.setText(rs.getString(11));
+
+                btnEventoAdicionar.setEnabled(false);
+                txtCliPesquisar.setEnabled(false);
+                tblClientes.setVisible(false);
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Evento não cadastrado!");
+            }
+
+        } catch (java.sql.SQLSyntaxErrorException e) {
+            JOptionPane.showMessageDialog(null, "Número de evento inválido");
+            System.out.println(e);
+        } catch (Exception e2) {
+            JOptionPane.showMessageDialog(null, e2);
+        }
+    }
+
+    private void alterarEvento() {
+        String sql = "update tbeventos set tipo_eve_orc = ?, situacao = ?, tipo = ?, dia = ?, hora = ?, lugar = ?, valor = ?, descricao = ? where evento = ?";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, tipoEveOrc);
+            pst.setString(2, cboEventoSit.getSelectedItem().toString());
+            pst.setString(3, txtEventoTipo.getText());
+            pst.setString(4, txtEventoDia.getText());
+            pst.setString(5, txtEventoHora.getText());
+            pst.setString(6, txtEventoLocal.getText());
+            pst.setString(7, txtEventoValor.getText().replace(",", "."));
+            pst.setString(8, txtEventoDescricao.getText());
+            pst.setString(9, txtEvento.getText());
+
+            if ((txtCliId.getText().isEmpty()) || (txtEventoDia.getText().isEmpty()) || (txtEventoHora.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios!");
+            } else {
+                int adicionado = pst.executeUpdate();
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Evento alterada com sucesso!");
+                }
+                txtEvento.setText(null);
+                txtData.setText(null);
+                txtCliId.setText(null);
+                txtEventoTipo.setText(null);
+                txtEventoDia.setText(null);
+                txtEventoHora.setText(null);
+                txtEventoLocal.setText(null);
+                txtEventoValor.setText(null);
+                txtEventoDescricao.setText(null);
+
+                //habilitar botoes
+                btnEventoAdicionar.setEnabled(true);
+                txtCliPesquisar.setEnabled(true);
+                tblClientes.setVisible(true);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void excluirEvento() {
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir esse evento?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbeventos where evento = ?";
+
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtEvento.getText());
+                int apagado = pst.executeUpdate();
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Evento excluído com sucesso!");
+                    txtEvento.setText(null);
+                    txtData.setText(null);
+                    txtCliId.setText(null);
+                    txtEventoTipo.setText(null);
+                    txtEventoDia.setText(null);
+                    txtEventoHora.setText(null);
+                    txtEventoLocal.setText(null);
+                    txtEventoValor.setText(null);
+                    txtEventoDescricao.setText(null);
+
+                    //habilitar botoes
+                    btnEventoAdicionar.setEnabled(true);
+                    txtCliPesquisar.setEnabled(true);
+                    tblClientes.setVisible(true);
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
         }
     }
 
@@ -347,12 +468,27 @@ private void emitirEvento(){
         getContentPane().add(btnEventoAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 470, 130, 130));
 
         btnEventoPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/read.png"))); // NOI18N
+        btnEventoPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventoPesquisarActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnEventoPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 470, 130, 130));
 
         btnEventoExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/delete.png"))); // NOI18N
+        btnEventoExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventoExcluirActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnEventoExcluir, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 470, 130, 130));
 
         btnEventoAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/update.png"))); // NOI18N
+        btnEventoAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventoAlterarActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnEventoAlterar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 470, 130, 130));
 
         btnEventoImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/imprimir.png"))); // NOI18N
@@ -364,26 +500,26 @@ private void emitirEvento(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventoActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_txtEventoActionPerformed
 
     private void txtCliPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCliPesquisarKeyReleased
-        // TODO add your handling code here:
+
         pesquisarCliente();
     }//GEN-LAST:event_txtCliPesquisarKeyReleased
 
     private void txtCliIdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCliIdMouseClicked
-        // TODO add your handling code here:
+
         setarCampos();
     }//GEN-LAST:event_txtCliIdMouseClicked
 
     private void rbtOrcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtOrcActionPerformed
-        // TODO add your handling code here:
+
         tipoEveOrc = "Orcamento";
     }//GEN-LAST:event_rbtOrcActionPerformed
 
     private void rbtEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtEventoActionPerformed
-        // TODO add your handling code here:
+
         tipoEveOrc = "Evento";
     }//GEN-LAST:event_rbtEventoActionPerformed
 
@@ -394,9 +530,21 @@ private void emitirEvento(){
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void btnEventoAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventoAdicionarActionPerformed
-        // TODO add your handling code here:
+
         emitirEvento();
     }//GEN-LAST:event_btnEventoAdicionarActionPerformed
+
+    private void btnEventoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventoPesquisarActionPerformed
+        pesquisarEvento();
+    }//GEN-LAST:event_btnEventoPesquisarActionPerformed
+
+    private void btnEventoAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventoAlterarActionPerformed
+        alterarEvento();
+    }//GEN-LAST:event_btnEventoAlterarActionPerformed
+
+    private void btnEventoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventoExcluirActionPerformed
+        excluirEvento();
+    }//GEN-LAST:event_btnEventoExcluirActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
