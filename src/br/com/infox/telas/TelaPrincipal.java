@@ -49,6 +49,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menCadUsu = new javax.swing.JMenuItem();
         menRel = new javax.swing.JMenu();
         menRelEve = new javax.swing.JMenuItem();
+        menRelPes = new javax.swing.JMenuItem();
         menAju = new javax.swing.JMenu();
         menAjuSob = new javax.swing.JMenuItem();
         menOpc = new javax.swing.JMenu();
@@ -139,7 +140,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menRelEve.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
         menRelEve.setText("Eventos");
         menRelEve.setEnabled(false);
+        menRelEve.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelEveActionPerformed(evt);
+            }
+        });
         menRel.add(menRelEve);
+
+        menRelPes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.SHIFT_MASK));
+        menRelPes.setText("Pesquisa");
+        menRelPes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelPesActionPerformed(evt);
+            }
+        });
+        menRel.add(menRelPes);
 
         menu.add(menRel);
 
@@ -266,6 +281,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menOpcSairActionPerformed
 
+    private void menRelPesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelPesActionPerformed
+        // TODO add your handling code here:
+        TelaPesquisa pesquisa = new TelaPesquisa();
+        pesquisa.setVisible(true);
+        desktop.add(pesquisa);
+    }//GEN-LAST:event_menRelPesActionPerformed
+
+    private void menRelEveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelEveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menRelEveActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -321,6 +347,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem menOpcSair;
     private javax.swing.JMenu menRel;
     public static javax.swing.JMenuItem menRelEve;
+    private javax.swing.JMenuItem menRelPes;
     private javax.swing.JMenuBar menu;
     // End of variables declaration//GEN-END:variables
 }

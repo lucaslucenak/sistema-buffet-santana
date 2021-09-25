@@ -262,6 +262,7 @@ public class TelaEvento extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setTitle("Eventos");
+        setPreferredSize(new java.awt.Dimension(977, 634));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -382,6 +383,11 @@ public class TelaEvento extends javax.swing.JInternalFrame {
                 "ID", "Nome", "Celular"
             }
         ));
+        tblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblClientes);
 
         txtCliId.setEditable(false);
@@ -496,7 +502,7 @@ public class TelaEvento extends javax.swing.JInternalFrame {
         btnEventoImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         getContentPane().add(btnEventoImprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 470, 130, 130));
 
-        setBounds(0, 0, 977, 634);
+        setBounds(0, 0, 975, 636);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventoActionPerformed
@@ -545,6 +551,11 @@ public class TelaEvento extends javax.swing.JInternalFrame {
     private void btnEventoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventoExcluirActionPerformed
         excluirEvento();
     }//GEN-LAST:event_btnEventoExcluirActionPerformed
+
+    private void tblClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClientesMouseClicked
+        // TODO add your handling code here:
+        setarCampos();
+    }//GEN-LAST:event_tblClientesMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
